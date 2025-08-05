@@ -1,48 +1,51 @@
 <template>
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>№</th>
-          <th>Experiment ID</th>
-          <th>Metric name</th>
-          <th>Step</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(experiment, index) in currentExperiments"
-          :key="`${experiment.experiment_id}-${experiment.metric_name}-${experiment.step}`"
-        >
-          <td>{{ (currentPage - 1) * perPage + index + 1 }}</td>
-          <td>{{ experiment.experiment_id }}</td>
-          <td>{{ experiment.metric_name }}</td>
-          <td>{{ experiment.step }}</td>
-          <td>{{ experiment.value }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="flex-table-column">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Experiment ID</th>
+            <th>Metric name</th>
+            <th>Step</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(experiment, index) in currentExperiments"
+            :key="`${experiment.experiment_id}-${experiment.metric_name}-${experiment.step}`"
+          >
+            <td>{{ (currentPage - 1) * perPage + index + 1 }}</td>
+            <td>{{ experiment.experiment_id }}</td>
+            <td>{{ experiment.metric_name }}</td>
+            <td>{{ experiment.step }}</td>
+            <td>{{ experiment.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div>
-    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
-      Prev
-    </button>
-    <button
-      @click="goToPage(currentPage + 1)"
-      :disabled="currentPage === totalPages"
-    >
-      Next
-    </button>
-    <input
-      :value="currentPage"
-      type="number"
-      min="1"
-      :max="totalPages"
-      @change="handleChange"
-    />
-    <span>Page {{ currentPage }} / {{ totalPages }}</span>
+    <div class="flex-table-row">
+      <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
+        Prev
+      </button>
+
+      <input
+        :value="currentPage"
+        type="number"
+        min="1"
+        :max="totalPages"
+        @change="handleChange"
+      />
+      <span>Page {{ currentPage }} / {{ totalPages }}</span>
+      <button
+        @click="goToPage(currentPage + 1)"
+        :disabled="currentPage === totalPages"
+      >
+        Next
+      </button>
+    </div>
   </div>
 </template>
 
@@ -85,6 +88,7 @@
 <style lang="scss" scoped>
   .table-wrapper {
     border: 1px solid #ccc;
+    margin-bottom: 20px;
   }
 
   .table-wrapper table {
@@ -103,5 +107,18 @@
     top: 0;
     background: white;
     z-index: 1;
+  }
+  .flex-table-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex-table-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
   }
 </style>
