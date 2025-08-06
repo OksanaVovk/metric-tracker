@@ -20,6 +20,8 @@
     color: black;
   }
   .p-dialog .p-dialog-content {
+    background: white;
+    color: black;
     overflow-x: auto;
     padding: 0 8px;
   }

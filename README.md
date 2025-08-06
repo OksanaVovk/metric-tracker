@@ -1,7 +1,22 @@
-# Vue 3 + Vite
+# 📊 Metric Tracker
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is a web application for viewing and analyzing experimental data. Built with **Vue 3**, **Vite**, **PrimeVue**, and **SCSS**.
 
-## Recommended IDE Setup
+## 🔗 Live Demo
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+Check out the deployed version here:  
+👉 [https://oksanavovk.github.io/metric-tracker](https://oksanavovk.github.io/metric-tracker)
+
+## 🚀 Technologies Used
+
+- [Vue 3](https://vuejs.org/)
+- [Vite](https://vitejs.dev/)
+- [PrimeVue](https://primevue.org/)
+- SCSS
+
+## 📦 Installation
+
+```bash
+npm install
+npm run dev
+```
