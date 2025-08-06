@@ -25,5 +25,6 @@
   .logo {
     color: #ff8000;
     margin: 0;
+    font-size: 1.5em;
   }
 </style>

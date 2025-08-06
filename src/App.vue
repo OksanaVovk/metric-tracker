@@ -6,6 +6,7 @@
   import { prepareFirstChartData } from "./utils/prepareFirstChartData";
   import { prepareSecondChartData } from "./utils/prepareSecondChartData";
   import MetricChart from "./components/MetricChart.vue";
+  import BuildChartButton from "./components/BuildChartButton.vue";
   import Header from "./components/Header.vue";
   import Container from "./components/Container.vue";
   import { computed, ref } from "vue";
@@ -15,6 +16,8 @@
   const selectOneExperiment = ref("");
   const selectMetricName = ref("");
   const selectExperiments = ref([]);
+  const firstChartData = ref(null);
+  const secondChartData = ref(null);
   const experiments = computed(() => store.state.experiments);
   const experimentsIdArray = computed(() => [
     ...new Set(
@@ -30,19 +33,20 @@
         .filter((metric_name) => metric_name != null)
     ),
   ]);
-  const firstChartData = computed(() => {
-    if (!selectOneExperiment.value) return null;
-    return prepareFirstChartData(experiments.value, selectOneExperiment.value);
-  });
-  const secondChartData = computed(() => {
-    if (!selectMetricName.value || selectExperiments.value.length === 0)
-      return null;
-    return prepareSecondChartData(
+
+  const onBuildChart1 = () => {
+    firstChartData.value = prepareFirstChartData(
+      experiments.value,
+      selectOneExperiment.value
+    );
+  };
+  const onBuildChart2 = () => {
+    secondChartData.value = prepareSecondChartData(
       experiments.value,
       selectExperiments.value,
       selectMetricName.value
     );
-  });
+  };
 </script>
 
 <template>
@@ -51,27 +55,60 @@
     <div class="content">
       <div class="flex-row">
         <div class="left-content">
-          <ExperimentsList :experiments="experiments" />
+          <ExperimentsList
+            v-if="experiments.length !== 0"
+            :experiments="experiments"
+          />
+          <p v-else class="no-data-text">
+            There are no uploaded experiments at the moment
+          </p>
         </div>
         <div class="flex-column">
-          <InputDownload />
+          <div class="input-content">
+            <p class="text">
+              Upload a CSV file to generate metrics and visualize experiment
+              results.
+            </p>
+            <InputDownload />
+          </div>
+          <div v-if="experiments.length !== 0" class="chart-content">
+            <section class="chart-section">
+              <h2 class="chart-title">Single Experiment Metrics</h2>
+              <SingleSelectRadio
+                v-model="selectOneExperiment"
+                :options="experimentsIdArray"
+                name="experiments"
+                class="checkbox-section"
+              />
+              <BuildChartButton
+                :disabled="!selectOneExperiment"
+                @build="onBuildChart1"
+              />
+              <MetricChart v-if="firstChartData" :data="firstChartData" />
+            </section>
 
-          <SingleSelectRadio
-            v-model="selectOneExperiment"
-            :options="experimentsIdArray"
-            name="experiments"
-          />
-          <MetricChart v-if="firstChartData" :data="firstChartData" />
-          <SingleSelectRadio
-            v-model="selectMetricName"
-            :options="metricsNamedArray"
-            name="metrics"
-          />
-          <MultiSelectCheckbox
-            v-model="selectExperiments"
-            :options="experimentsIdArray"
-          />
-          <MetricChart v-if="secondChartData" :data="secondChartData" />
+            <section class="chart-section">
+              <h2 class="chart-title">
+                Comparison of Metrics Across Experiments
+              </h2>
+              <MultiSelectCheckbox
+                v-model="selectExperiments"
+                :options="experimentsIdArray"
+                class="checkbox-section"
+              />
+              <SingleSelectRadio
+                v-model="selectMetricName"
+                :options="metricsNamedArray"
+                name="metrics"
+                class="checkbox-section"
+              />
+              <BuildChartButton
+                :disabled="!selectMetricName || !selectExperiments.length === 0"
+                @build="onBuildChart2"
+              />
+              <MetricChart v-if="secondChartData" :data="secondChartData" />
+            </section>
+          </div>
         </div>
       </div>
     </div>
@@ -92,14 +129,18 @@
     padding: 0 80px;
     width: 100%;
     max-width: 1400px;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 40px;
+  }
+  .no-data-text {
+    text-align: center;
+    color: #777;
+    font-size: 1rem;
+    font-style: italic;
   }
   .left-content {
     min-height: 100vh;
     padding-top: 40px;
     padding-right: 40px;
+    padding-bottom: 40px;
     border-right: solid 2px #ff8000;
   }
   .flex-column {
@@ -107,7 +148,50 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 40px;
-    height: 100vh;
+    width: 100%;
+  }
+  .input-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 200px;
+    padding: 40px 0 40px 40px;
+  }
+  .text {
+    color: #444;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: center;
+    font-style: normal;
+  }
+  .chart-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 40px 0 40px 40px;
+    gap: 40px;
+  }
+  .chart-section {
+    background: #fff8f0;
+    border: 2px solid #ff8000;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(255, 128, 0, 0.2);
+    width: 100%;
+  }
+
+  .chart-title {
+    margin-bottom: 16px;
+    color: #ff8000;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .checkbox-section {
+    margin-bottom: 20px;
   }
 </style>
