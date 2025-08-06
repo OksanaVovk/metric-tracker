@@ -14,4 +14,13 @@
 <script setup>
   const modelValue = defineModel();
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+  .p-dialog {
+    background: white;
+    color: black;
+  }
+  .p-dialog .p-dialog-content {
+    overflow-x: auto;
+    padding: 0 8px;
+  }
+</style>
