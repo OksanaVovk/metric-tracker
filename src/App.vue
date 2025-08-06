@@ -8,6 +8,7 @@
   import MetricChart from "./components/MetricChart.vue";
   import BuildChartButton from "./components/BuildChartButton.vue";
   import Header from "./components/Header.vue";
+  import ModalWindow from "./components/ModalWindow.vue";
   import Container from "./components/Container.vue";
   import { computed, ref } from "vue";
   import { useStore } from "vuex";
@@ -18,6 +19,7 @@
   const selectExperiments = ref([]);
   const firstChartData = ref(null);
   const secondChartData = ref(null);
+  const showModal = ref(false);
   const experiments = computed(() => store.state.experiments);
   const experimentsIdArray = computed(() => [
     ...new Set(
@@ -67,10 +69,21 @@
           <div class="input-content">
             <p class="text">
               Upload a CSV file to generate metrics and visualize experiment
-              results.
+              results
             </p>
             <InputDownload />
           </div>
+          <a
+            v-if="experiments.length !== 0"
+            @click="showModal = true"
+            class="open-modal"
+          >
+            Experiment Details
+          </a>
+
+          <ModalWindow v-model="showModal">
+            <ExperimentsList :experiments="experiments" />
+          </ModalWindow>
           <div v-if="experiments.length !== 0" class="chart-content">
             <section class="chart-section">
               <h2 class="chart-title">Single Experiment Metrics</h2>
@@ -115,7 +128,7 @@
   </Container>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
   .content {
     display: flex;
     flex-grow: 1;
@@ -125,23 +138,33 @@
   }
   .flex-row {
     display: flex;
-    flex-direction: row;
-    padding: 0 80px;
+    flex-direction: column;
+    padding: 0 20px;
     width: 100%;
     max-width: 1400px;
+    @media (min-width: 640px) and (max-width: 1200px) {
+      padding: 0px 40px;
+    }
+    @media (min-width: 1200px) {
+      flex-direction: row;
+      padding: 0px 80px;
+    }
   }
   .no-data-text {
     text-align: center;
     color: #777;
-    font-size: 1rem;
     font-style: italic;
   }
   .left-content {
-    min-height: 100vh;
-    padding-top: 40px;
-    padding-right: 40px;
-    padding-bottom: 40px;
-    border-right: solid 2px #ff8000;
+    display: none;
+    @media (min-width: 1200px) {
+      display: block;
+      min-height: 100vh;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      border-right: solid 2px #ff8000;
+      padding-right: 40px;
+    }
   }
   .flex-column {
     display: flex;
@@ -154,14 +177,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
-    min-height: 200px;
-    padding: 40px 0 40px 40px;
+    min-height: 100px;
+    padding: 40px 0;
+    @media (min-width: 1200px) {
+      padding: 40px 0 40px 40px;
+      min-height: 200px;
+    }
   }
   .text {
     color: #444;
-    font-size: 1.1rem;
     margin-bottom: 20px;
     text-align: center;
     font-style: normal;
@@ -172,8 +198,10 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 40px 0 40px 40px;
     gap: 40px;
+    @media (min-width: 1200px) {
+      padding: 40px 0 40px 40px;
+    }
   }
   .chart-section {
     background: #fff8f0;
@@ -183,15 +211,36 @@
     box-shadow: 0 3px 8px rgba(255, 128, 0, 0.2);
     width: 100%;
   }
-
   .chart-title {
     margin-bottom: 16px;
     color: #ff8000;
-    font-size: 1.5rem;
+    font-size: 16px;
     font-weight: 700;
     text-align: center;
+    @media (min-width: 640px) and (max-width: 1200px) {
+      font-size: 20px;
+    }
+    @media (min-width: 1200px) {
+      font-size: 24px;
+    }
   }
+
   .checkbox-section {
     margin-bottom: 20px;
+  }
+  .open-modal {
+    display: block;
+    background-color: transparent;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: none;
+    color: #2563eb;
+    transition: color 0.2s;
+    &:hover {
+      color: #1e40af;
+    }
+    @media (min-width: 1200px) {
+      display: none;
+    }
   }
 </style>
