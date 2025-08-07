@@ -89,6 +89,10 @@
   .table-wrapper {
     border: 1px solid #ccc;
     margin-bottom: 20px;
+    font-size: 14px;
+    @media (min-width: 640px) {
+      font-size: 16px;
+    }
   }
 
   .table-wrapper table {
